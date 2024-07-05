@@ -25,19 +25,28 @@ func CalculateParkingFee(parkTime, leaveTime time.Time) (int, error) {
 	startSuspensionTime := time.Date(parkTime.Year(), parkTime.Month(), parkTime.Day(), 22, 0, 0, 0, time.UTC)
 
 	// Less than 2 hours
-	if difference.Minutes() <= 120 {
+	if difference.Minutes() <= freeParkingTime() {
 		return 0, nil
 	}
 
-	actualMinutes := difference.Minutes() - 120
+	actualMinutes := difference.Minutes() - freeParkingTime()
 	if leaveTime.After(startSuspensionTime) {
 		totalPrice += 1000
 		actualMinutes -= leaveTime.Sub(startSuspensionTime).Minutes()
-		if startSuspensionTime.Sub(parkTime).Minutes() > 120 {
-			totalPrice += int(math.Ceil(actualMinutes/60)) * pricePerHour
+		if startSuspensionTime.Sub(parkTime).Minutes() > freeParkingTime() {
+			totalPrice += CalculateParkingPriceWithTime(actualMinutes, pricePerHour)
 		}
 	} else {
-		totalPrice += int(math.Ceil(actualMinutes/60)) * pricePerHour
+		totalPrice += CalculateParkingPriceWithTime(actualMinutes, pricePerHour)
 	}
 	return totalPrice, nil
+}
+
+func freeParkingTime() float64 {
+	freeTime := time.Hour * 2
+	return freeTime.Minutes()
+}
+
+func CalculateParkingPriceWithTime(actualMinutes float64, pricePerHour int) int {
+	return int(math.Ceil(actualMinutes/60)) * pricePerHour
 }
