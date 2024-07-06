@@ -134,3 +134,47 @@ func TestParkMoreThanTwoHoursAndLeaveAfterTenPmButBeforeTenPm(t *testing.T) {
 		}
 	}
 }
+
+func TestParkMoreThan24Hours(t *testing.T) {
+	type testCase struct {
+		parkTime  time.Time
+		leaveTime time.Time
+		expected  int
+	}
+	tests := []testCase{
+		{
+			time.Date(2019, time.January, 1, 20, 0, 0, 0, time.UTC),
+			time.Date(2019, time.January, 3, 21, 0, 0, 0, time.UTC),
+			4300,
+		},
+		{
+			time.Date(2019, time.January, 1, 20, 0, 0, 0, time.UTC),
+			time.Date(2019, time.January, 3, 22, 0, 0, 0, time.UTC),
+			5400,
+		},
+		{
+			time.Date(2019, time.January, 1, 20, 0, 0, 0, time.UTC),
+			time.Date(2019, time.January, 5, 23, 0, 0, 0, time.UTC),
+			9800,
+
+			// day 1: 20 - 22 -> Free
+			// day 2: 22 - 10 -> 1000
+			// day 2: 10 - 22 -> 1200
+			// day 3: 22 - 10 -> 1000
+			// day 3: 10 - 22 -> 1200
+			// day 4: 22 - 10 -> 1000
+			// day 4: 10 - 22 -> 1200
+			// day 5: 22 - 10 -> 1000
+			// day 5: 10 - 22 -> 1200
+			// day 5: 22 - 23 -> 1000
+			// 1000 + 1200 + 1000 + 1200 + 1000 + 1200 + 1000 + 1200 + 1000 = 9800
+		},
+	}
+
+	for _, test := range tests {
+		result, _ := CalculateParkingFee(test.parkTime, test.leaveTime)
+		if result != test.expected {
+			t.Errorf("Expected %d, got %d", test.expected, result)
+		}
+	}
+}
