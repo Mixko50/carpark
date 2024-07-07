@@ -31,6 +31,11 @@ func TestParkLessThanTwoHours(t *testing.T) {
 			time.Date(2019, time.January, 1, 12, 0, 0, 0, time.UTC),
 			0,
 		},
+		{
+			time.Date(2019, time.January, 1, 10, 0, 0, 0, time.UTC),
+			time.Date(2019, time.January, 1, 1, 3, 2, 0, time.UTC),
+			0,
+		},
 	}
 
 	for _, test := range tests {
@@ -63,7 +68,7 @@ func TestParkMoreThanTwoHours(t *testing.T) {
 		{
 			// 4 hours 1 minute
 			time.Date(2019, time.January, 1, 11, 0, 0, 0, time.UTC),
-			time.Date(2019, time.January, 1, 15, 1, 0, 0, time.UTC),
+			time.Date(2019, time.January, 1, 15, 0, 1, 0, time.UTC),
 			300,
 		},
 	}
@@ -143,9 +148,26 @@ func TestParkMoreThan24Hours(t *testing.T) {
 	}
 	tests := []testCase{
 		{
+			time.Date(2019, time.January, 3, 21, 0, 0, 0, time.UTC),
+			time.Date(2019, time.January, 4, 22, 0, 0, 0, time.UTC),
+			3200,
+
+			// day 1: 21 - 21:59 -> Free
+			// day 2: 22 - 10 -> 1000
+			// day 2: 10 - 21:59 -> 1200
+			// day 3: 22 -> 1000
+			// 1000 + 1200 + 1000 = 3200
+		},
+		{
 			time.Date(2019, time.January, 1, 20, 0, 0, 0, time.UTC),
 			time.Date(2019, time.January, 3, 21, 0, 0, 0, time.UTC),
 			4300,
+
+			// day 1: 20 - 22 -> Free
+			// day 2: 22 - 10 -> 1000
+			// day 2: 10 - 22 -> 1200
+			// day 3: 22 - 10 -> 1000
+			// day 3: 10 - 21 -> 1100
 		},
 		{
 			time.Date(2019, time.January, 1, 20, 0, 0, 0, time.UTC),
