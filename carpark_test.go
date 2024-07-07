@@ -45,7 +45,7 @@ func TestParkLessThanTwoHours(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result, _ := CalculateParkingFee(test.parkTime, test.leaveTime)
+			result := CalculateParkingFee(test.parkTime, test.leaveTime)
 			if result != test.expected {
 				t.Errorf("Expected %d, got %d", test.expected, result)
 			}
@@ -107,7 +107,7 @@ func TestParkMoreThanTwoHoursAndBeforeTenPm(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result, _ := CalculateParkingFee(test.parkTime, test.leaveTime)
+			result := CalculateParkingFee(test.parkTime, test.leaveTime)
 			if result != test.expected {
 				t.Errorf("Expected %d, got %d", test.expected, result)
 			}
@@ -190,7 +190,7 @@ func TestParkMoreThanTwoHoursAndLeaveAfterTenPmButBeforeTenPm(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result, _ := CalculateParkingFee(test.parkTime, test.leaveTime)
+			result := CalculateParkingFee(test.parkTime, test.leaveTime)
 			if result != test.expected {
 				t.Errorf("Expected %d, got %d", test.expected, result)
 			}
@@ -272,7 +272,7 @@ func TestParkMoreThan24Hours(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result, _ := CalculateParkingFee(test.parkTime, test.leaveTime)
+			result := CalculateParkingFee(test.parkTime, test.leaveTime)
 			if result != test.expected {
 				t.Errorf("Expected %d, got %d", test.expected, result)
 			}
