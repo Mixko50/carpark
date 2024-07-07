@@ -268,6 +268,18 @@ func TestParkMoreThan24Hours(t *testing.T) {
 			time.Date(2019, time.January, 20, 2, 4, 42, 0, time.UTC),
 			41300,
 		},
+		{
+			"5 days, 8 hours, 20 minutes",
+			time.Date(2019, time.January, 12, 10, 30, 58, 0, time.UTC),
+			time.Date(2019, time.January, 17, 18, 50, 12, 0, time.UTC),
+			11700,
+		},
+		{
+			"24 hours",
+			time.Date(2019, time.January, 12, 10, 30, 58, 0, time.UTC),
+			time.Date(2019, time.January, 13, 10, 30, 58, 0, time.UTC),
+			2100,
+		},
 	}
 
 	for _, test := range tests {
