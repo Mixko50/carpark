@@ -28,7 +28,6 @@ func GetParkingFee(token string) (int, error) {
 		log.Fatal("Token is invalid")
 	}
 
-	fmt.Println(claims.EntryTime)
 	parkTime := time.Unix(claims.EntryTime, 0)
 	parkTime = time.Date(parkTime.Year(), parkTime.Month(), parkTime.Day(), parkTime.Hour()-7, parkTime.Minute(), parkTime.Second(), 0, time.UTC)
 	currentTime := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), time.Now().Hour(), time.Now().Minute(), time.Now().Second(), 0, time.UTC)

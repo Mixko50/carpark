@@ -14,6 +14,7 @@ import (
 // เศษของชั่วโมงถือเป็นชั่วโมงเต็ม
 
 var format = flag.String("mode", "gen", "gen: for generate new parking ticket\ncheck: for check parking fee\n")
+var tokenString = flag.String("token", "", "token for check parking fee\n")
 
 func main() {
 	flag.Parse()
@@ -32,10 +33,9 @@ func main() {
 			fmt.Println(result)
 		}
 	} else {
-		fmt.Println(GetParkingFee("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbnRyeV90aW1lIjoxNzIwMjk2MDAwLCJpYXQiOjE3MjAzNjI3NzV9.V8PTPjmRmAw5ga4dX0I2q8ub-YsNmUf5buvFkcL9iZo"))
+		if tokenString == nil || *tokenString == "" {
+			log.Fatal("Token is required")
+		}
+		fmt.Println(GetParkingFee(*tokenString))
 	}
-
-	//parkTime := time.Date(2019, time.January, 1, 15, 7, 28, 0, time.UTC)
-	//leaveTime := time.Date(2019, time.January, 2, 14, 39, 40, 0, time.UTC)
-	//fmt.Println(CalculateParkingFee(parkTime, leaveTime))
 }
