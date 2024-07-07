@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"os"
@@ -14,21 +13,18 @@ type ParkingTicket struct {
 }
 
 func GenerateParkingTicket() (string, error) {
-	if os.Getenv("PARKING_SECRET") == "" {
-		return "", errors.New("PARKING_SECRET is not set")
-	}
-
 	secretKey := os.Getenv("PARKING_SECRET")
 
 	claims := ParkingTicket{
-		EntryTime: time.Now().Unix(),
-		RegisteredClaims: jwt.RegisteredClaims{
+		//EntryTime: time.Now().Unix(),
+		time.Date(2024, time.July, 6, 20, 0, 0, 0, time.UTC).Unix(),
+		jwt.RegisteredClaims{
 			IssuedAt: jwt.NewNumericDate(time.Now()),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString([]byte(os.Getenv(secretKey)))
+	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
 	}

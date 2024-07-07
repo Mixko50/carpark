@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/joho/godotenv"
+	"log"
+	"os"
 )
 
 // โจทย์
@@ -18,6 +20,10 @@ func main() {
 	godotenv.Load()
 	godotenv.Load(".env")
 
+	if os.Getenv("PARKING_SECRET") == "" {
+		log.Fatal("PARKING_SECRET is not set")
+	}
+
 	if *format == "gen" {
 		result, err := GenerateParkingTicket()
 		if err != nil {
@@ -26,7 +32,7 @@ func main() {
 			fmt.Println(result)
 		}
 	} else {
-		fmt.Println("Check parking fee")
+		fmt.Println(GetParkingFee("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbnRyeV90aW1lIjoxNzIwMjk2MDAwLCJpYXQiOjE3MjAzNjI3NzV9.V8PTPjmRmAw5ga4dX0I2q8ub-YsNmUf5buvFkcL9iZo"))
 	}
 
 	//parkTime := time.Date(2019, time.January, 1, 15, 7, 28, 0, time.UTC)

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"time"
 )
@@ -31,40 +30,40 @@ func CalculateParkingFee(parkTime, leaveTime time.Time) int {
 		return CalculateMultipleDayParkingFee2(parkTime, leaveTime)
 	}
 
-	return CalculateSingleDayParkingFee(parkTime, leaveTime)
+	return CalculateSingleDayParkingFee2(parkTime, leaveTime)
 }
 
-func CalculateSingleDayParkingFee(parkTime, leaveTime time.Time) int {
-	startSuspensionTime := time.Date(parkTime.Year(), parkTime.Month(), parkTime.Day(), suspensionStartTime, 0, 0, 0, time.UTC)
-	endSuspensionTime := time.Date(leaveTime.Year(), leaveTime.Month(), leaveTime.Day(), suspensionEndTime, 0, 0, 0, time.UTC)
-	difference := leaveTime.Sub(parkTime)
-	actualMinutes := difference.Minutes() - freeParkingTime()
+func CalculateSingleDayParkingFee2(parkTime, leaveTime time.Time) int {
 	totalPrice := 0
-
-	if leaveTime.After(startSuspensionTime) {
-		totalPrice += suspensionFee
-		actualMinutes -= leaveTime.Sub(startSuspensionTime).Minutes()
-		if leaveTime.After(endSuspensionTime) {
-			actualMinutes += leaveTime.Sub(endSuspensionTime).Minutes()
+	startSuspensionTime := time.Date(parkTime.Year(), parkTime.Month(), parkTime.Day(), suspensionStartTime, 0, 0, 0, time.UTC)
+	if leaveTime.Before(startSuspensionTime) {
+		totalPrice += CalculateParkingPriceWithTime(leaveTime.Sub(parkTime).Minutes(), pricePerHour)
+		if leaveTime.Sub(parkTime).Minutes() > freeParkingTime() {
+			totalPrice -= 200
+			return totalPrice
 		}
-		if startSuspensionTime.Sub(parkTime).Minutes() > freeParkingTime() {
-			totalPrice += CalculateParkingPriceWithTime(actualMinutes, pricePerHour)
-		}
-	} else {
-		totalPrice += CalculateParkingPriceWithTime(actualMinutes, pricePerHour)
+		return totalPrice
 	}
+
+	totalPrice += suspensionFee
+	if startSuspensionTime.Sub(parkTime).Minutes() > freeParkingTime() {
+		totalPrice += CalculateParkingPriceWithTime(startSuspensionTime.Sub(parkTime).Minutes(), pricePerHour)
+		totalPrice -= 200
+	}
+
+	endSuspensionTime := time.Date(leaveTime.Year(), leaveTime.Month(), leaveTime.Day(), suspensionEndTime, 0, 0, 0, time.UTC)
+	if leaveTime.After(endSuspensionTime) && parkTime.Day() != leaveTime.Day() {
+		totalPrice += CalculateParkingPriceWithTime(leaveTime.Sub(endSuspensionTime).Minutes(), pricePerHour)
+		return totalPrice
+	}
+
 	return totalPrice
 }
 
-func CalculateMultipleDayParkingFee2(parkTime, leaveTime time.Time) int {
-	totalPrice := 0
-
+func CalculateMultipleDayParkingFee2(parkTime, leaveTime time.Time) (totalPrice int) {
 	startSuspensionTime := time.Date(parkTime.Year(), parkTime.Month(), parkTime.Day(), suspensionStartTime, 0, 0, 0, time.UTC)
 	if startSuspensionTime.Sub(parkTime).Minutes() > freeParkingTime() {
 		totalPrice += CalculateParkingPriceWithTime(startSuspensionTime.Sub(parkTime).Minutes(), pricePerHour)
-	}
-
-	if startSuspensionTime.Sub(parkTime).Minutes() > freeParkingTime() {
 		totalPrice -= 200
 	}
 
@@ -81,8 +80,6 @@ func CalculateMultipleDayParkingFee2(parkTime, leaveTime time.Time) int {
 	}
 
 	if roundUpLeaveTime.Hour() <= suspensionStartTime && endSuspensionTime.Before(roundUpLeaveTime) {
-		fmt.Println(roundUpLeaveTime)
-		fmt.Println(endSuspensionTime)
 		totalPrice += int(math.Abs(endSuspensionTime.Sub(roundUpLeaveTime).Hours())) * pricePerHour
 	} else {
 		totalPrice += dailyParkingFeeBeforeSuspension

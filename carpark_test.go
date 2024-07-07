@@ -103,6 +103,12 @@ func TestParkMoreThanTwoHoursAndBeforeTenPm(t *testing.T) {
 			time.Date(2019, time.January, 1, 21, 38, 6, 0, time.UTC),
 			900,
 		},
+		{
+			"18 hours 33 minutes 23 seconds",
+			time.Date(2024, time.July, 6, 20, 0, 0, 0, time.UTC),
+			time.Date(2024, time.July, 7, 14, 33, 23, 45562, time.UTC),
+			1500,
+		},
 	}
 
 	for _, test := range tests {
@@ -206,6 +212,12 @@ func TestParkMoreThan24Hours(t *testing.T) {
 		expected  int
 	}
 	tests := []testCase{
+		{
+			"26 hours 5 minutes 34 seconds",
+			time.Date(2024, time.July, 6, 20, 0, 0, 0, time.UTC),
+			time.Date(2024, time.July, 7, 22, 05, 34, 45562, time.UTC),
+			3200,
+		},
 		{
 			"25 hours",
 			time.Date(2019, time.January, 3, 21, 0, 0, 0, time.UTC),
