@@ -34,8 +34,7 @@ func CalculateParkingFee(parkTime, leaveTime time.Time) int {
 	return CalculateSingleDayParkingFee2(parkTime, leaveTime)
 }
 
-func CalculateSingleDayParkingFee2(parkTime, leaveTime time.Time) int {
-	totalPrice := 0
+func CalculateSingleDayParkingFee2(parkTime, leaveTime time.Time) (totalPrice int) {
 	startSuspensionTime := time.Date(parkTime.Year(), parkTime.Month(), parkTime.Day(), SuspensionStartTime, 0, 0, 0, time.UTC)
 	if leaveTime.Before(startSuspensionTime) {
 		totalPrice += CalculateParkingPriceWithTime(leaveTime.Sub(parkTime).Minutes(), PricePerHour)
