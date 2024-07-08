@@ -7,6 +7,7 @@ import (
 
 const (
 	pricePerHour                    = 100
+	freeParkingDiscount             = 200
 	freeParkingHours                = 2
 	suspensionStartTime             = 22
 	suspensionEndTime               = 10
@@ -39,7 +40,7 @@ func CalculateSingleDayParkingFee2(parkTime, leaveTime time.Time) int {
 	if leaveTime.Before(startSuspensionTime) {
 		totalPrice += CalculateParkingPriceWithTime(leaveTime.Sub(parkTime).Minutes(), pricePerHour)
 		if leaveTime.Sub(parkTime).Minutes() > freeParkingTime() {
-			totalPrice -= 200
+			totalPrice -= freeParkingDiscount
 			return totalPrice
 		}
 		return totalPrice
@@ -48,7 +49,7 @@ func CalculateSingleDayParkingFee2(parkTime, leaveTime time.Time) int {
 	totalPrice += suspensionFee
 	if startSuspensionTime.Sub(parkTime).Minutes() > freeParkingTime() {
 		totalPrice += CalculateParkingPriceWithTime(startSuspensionTime.Sub(parkTime).Minutes(), pricePerHour)
-		totalPrice -= 200
+		totalPrice -= freeParkingDiscount
 	}
 
 	endSuspensionTime := time.Date(leaveTime.Year(), leaveTime.Month(), leaveTime.Day(), suspensionEndTime, 0, 0, 0, time.UTC)
@@ -64,7 +65,7 @@ func CalculateMultipleDayParkingFee2(parkTime, leaveTime time.Time) (totalPrice 
 	startSuspensionTime := time.Date(parkTime.Year(), parkTime.Month(), parkTime.Day(), suspensionStartTime, 0, 0, 0, time.UTC)
 	if startSuspensionTime.Sub(parkTime).Minutes() > freeParkingTime() {
 		totalPrice += CalculateParkingPriceWithTime(startSuspensionTime.Sub(parkTime).Minutes(), pricePerHour)
-		totalPrice -= 200
+		totalPrice -= freeParkingDiscount
 	}
 
 	dayDifference := int(leaveTime.Sub(parkTime).Hours() / 24)
