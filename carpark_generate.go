@@ -15,8 +15,8 @@ type ParkingTicket struct {
 func GenerateParkingTicket() (string, error) {
 	secretKey := os.Getenv("PARKING_SECRET")
 
-	if time.Now().Hour() >= suspensionStartTime || time.Now().Hour() < suspensionEndTime {
-		return "", fmt.Errorf("cannot generate parking ticket after %dPM and before %dAM", suspensionStartTime, suspensionEndTime)
+	if time.Now().Hour() >= SuspensionStartTime || time.Now().Hour() < SuspensionEndTime {
+		return "", fmt.Errorf("cannot generate parking ticket after %dPM and before %dAM", SuspensionStartTime, SuspensionEndTime)
 	}
 
 	claims := ParkingTicket{
